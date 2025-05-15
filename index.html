@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>WebSocket Test</title>
+
+  <script>
+    const ws = new WebSocket('ws://localhost:3000');
+
+    ws.onopen = () => {
+      console.log('Connected to server');
+    };
+
+    ws.onclose = () => {
+      console.log('Disconnected from server');
+    };
+  </script>
+
+</head>
+
+<body>
+  <h1>WebSocket Test</h1>
+
+  <!-- Chat interface -->
+  <div id="chat">
+    <div id="messages">
+      <div id="messages-list"></div>
+    </div>
+    <form id="messageForm">
+      <input id="message" type="text" placeholder="Message">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const messageForm = document.getElementById('messageForm');
+    const messageInput = document.getElementById('message');
+    const messagesList = document.getElementById('messages-list');
+
+    messageForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const message = messageInput.value;
+      ws.send(message);
+      messageInput.value = '';
+
+      messagesList.innerHTML += `<div>${message}</div>`;
+    });
+
+    ws.onmessage = (event) => {
+      console.log('Received message:', event.data);
+      messagesList.innerHTML += `<div>${event.data}</div>`;
+    };
+
+  </script>
+</body>
+
+</html>
